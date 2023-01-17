@@ -20,6 +20,7 @@ describe('@override@', function () {
       done();
     });
   });
+
   it('@fromArg@ over config.json data', function (done) {
     process.env.nemoBaseDir = __dirname;
 
@@ -36,16 +37,17 @@ describe('@override@', function () {
       done();
     });
   });
+
   it('@builders@ overrides tgtBrowser abstraction', function (done) {
     process.env.nemoBaseDir = __dirname;
-    const binary = new firefox.Binary();
-    binary.addArguments("--headless");
+    const options = new firefox.Options();
+    options.addArguments("--headless");
 
     Nemo({
       driver: {
         builders: {
           forBrowser: ['firefox'],
-          setFirefoxOptions: [new firefox.Options().setBinary(binary)]
+          setFirefoxOptions: [options]
         }
       },
       data: {
@@ -59,15 +61,16 @@ describe('@override@', function () {
       });
     });
   });
+
   it('@driverFunction@ overrides other driver abstractions', function (done) {
     process.env.nemoBaseDir = __dirname;
 
     Nemo({
       driver: function () {
         const { Builder } = require('selenium-webdriver');
-        const binary = new firefox.Binary();
-        binary.addArguments("--headless");
-        return new Builder().forBrowser('firefox').setFirefoxOptions(new firefox.Options().setBinary(binary)).build()
+        const options = new firefox.Options();
+        options.addArguments("--headless");
+        return new Builder().forBrowser('firefox').setFirefoxOptions(options).build()
       },
       data: {
         baseUrl: 'http://www.ebay.com'
